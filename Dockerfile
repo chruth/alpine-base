@@ -4,6 +4,7 @@ LABEL maintainer="chruth"
 ENV \
   S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
   CONFIG_DIR="/config" \
+  APP_DIR="/app" \
   PUID="1000" \
   PGID="1000"
 
