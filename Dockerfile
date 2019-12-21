@@ -16,6 +16,7 @@ RUN apk add --update --no-cache \
     coreutils \
     shadow \
     tzdata \
+    ca-certificates \
     curl && \
     # s6 overlay download
     curl -o /tmp/s6overlay.tar.gz -sL \
