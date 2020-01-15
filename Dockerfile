@@ -6,7 +6,8 @@ ENV \
   CONFIG_DIR="/config" \
   APP_DIR="/app" \
   PUID="1000" \
-  PGID="1000"
+  PGID="1000" \
+  TZ="Europe/Berlin"
 
 ARG S6_VERSION="1.22.1.0"
 
