@@ -11,6 +11,9 @@ ENV \
 
 ARG S6_VERSION="1.22.1.0"
 
+ARG ARCH
+ENV ARCH="${ARCH}"
+
 # install packages
 RUN apk add --update --no-cache \
     bash \
@@ -21,7 +24,7 @@ RUN apk add --update --no-cache \
     curl && \
     # s6 overlay download
     curl -o /tmp/s6overlay.tar.gz -sL \
-    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-amd64.tar.gz" && \
+    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-${ARCH}.tar.gz" && \
     tar xzf /tmp/s6overlay.tar.gz -C / && \
     # cleanup
     apk del curl && \
