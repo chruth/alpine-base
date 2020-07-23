@@ -9,7 +9,7 @@ ENV \
   PGID="1000" \
   TZ="Europe/Berlin"
 
-ARG S6_VERSION="1.22.1.0"
+ARG S6_VERSION="2.0.0.1"
 
 ARG ARCH
 ENV ARCH="${ARCH}"
