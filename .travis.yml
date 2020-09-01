@@ -1,0 +1,38 @@
+os: linux
+language: shell
+services: docker
+install: sudo apt-get -y install jq curl
+
+env:
+  global:
+    - REPO=${DOCKER_USERNAME}/alpine-base
+    - PREFIX=${TRAVIS_BUILD_NUMBER}-${TRAVIS_COMMIT::8}
+  jobs:
+    - ARCH=amd64
+    - ARCH=aarch64
+    - ARCH=armhf
+
+before_script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+stage: "Build"
+script:
+  - docker build --build-arg ARCH=${ARCH} --tag $REPO:${PREFIX}-${ARCH} .
+  - docker push $REPO:${PREFIX}-${ARCH}
+
+jobs:
+  include:
+    - stage: "Deploy"
+      name: "Manifest"
+      script:
+        - cat <<< $(jq '.+{"experimental":"enabled"}' ~/.docker/config.json) > ~/.docker/config.json
+        - |
+          push() {
+            docker pull $REPO:${PREFIX}-amd64 & docker pull $REPO:${PREFIX}-aarch64 & docker pull $REPO:${PREFIX}-armhf
+            docker manifest create $REPO:${1} $REPO:${PREFIX}-amd64 $REPO:${PREFIX}-aarch64 $REPO:${PREFIX}-armhf
+            docker manifest annotate $REPO:${1} $REPO:${PREFIX}-amd64 --os linux --arch amd64
+            docker manifest annotate $REPO:${1} $REPO:${PREFIX}-armhf --os linux --arch arm --variant v7
+            docker manifest annotate $REPO:${1} $REPO:${PREFIX}-aarch64 --os linux --arch arm64 --variant v8
+            docker manifest push --purge $REPO:${1}
+          }
+        - push latest
