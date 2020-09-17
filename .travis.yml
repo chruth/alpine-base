@@ -1,26 +1,33 @@
 os: linux
+dist: bionic
 language: shell
-services: docker
-install: sudo apt-get -y install jq curl
-
 env:
   global:
     - REPO=${DOCKER_USERNAME}/alpine-base
-    - VERSION=${TRAVIS_BUILD_NUMBER}-${TRAVIS_COMMIT::8}
+    - VERSION=${TRAVIS_COMMIT::8}
   jobs:
     - ARCH=amd64
     - ARCH=aarch64
     - ARCH=armhf
 
+before_install:
+  - sudo rm -rf /var/lib/apt/lists/*
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  - mkdir -vp ~/.docker/cli-plugins/
+  - curl --silent -L "https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+  - chmod a+x ~/.docker/cli-plugins/docker-buildx
+
 before_script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-stage: "Build"
 script:
-  - docker build --build-arg ARCH=${ARCH} --tag $REPO:${ARCH}-${VERSION} .
-  - if [ "${TRAVIS_EVENT_TYPE}" == "cron" ]; then docker push $REPO:${ARCH}-${VERSION} ; fi
-  - docker tag $REPO:${ARCH}-${VERSION} $REPO:${ARCH}-latest
-  - docker push $REPO:${ARCH}-latest
+  - docker buildx create --use
+  - docker buildx build --push --build-arg ARCH=${ARCH} --platform linux/${ARCH} --tag $REPO:${ARCH}-latest .
+  - if [ "${TRAVIS_EVENT_TYPE}" == "cron" ]; then docker buildx build --push --build-arg ARCH=${ARCH} --platform linux/${ARCH} --tag $REPO:${ARCH}-${VERSION} . ; fi
 
 jobs:
   include:

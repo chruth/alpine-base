@@ -10,9 +10,7 @@ ENV \
   TZ="Europe/Berlin"
 
 ARG S6_VERSION="2.0.0.1"
-
 ARG ARCH
-ENV ARCH="${ARCH}"
 
 # install packages
 RUN apk add --update --no-cache \
