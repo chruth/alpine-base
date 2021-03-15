@@ -9,7 +9,7 @@ ENV \
   PGID="1000" \
   TZ="Europe/Berlin"
 
-ARG S6_VERSION="2.1.0.2"
+ARG S6_VERSION="2.2.0.3"
 ARG ARCH
 
 # install packages
