@@ -20,6 +20,8 @@ RUN apk add --update --no-cache \
     tzdata \
     ca-certificates \
     curl && \
+    # create app directory
+    mkdir "${APP_DIR}" && \
     # s6 overlay download
     curl -o /tmp/s6overlay.tar.gz -sL \
     "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-${ARCH}.tar.gz" && \
