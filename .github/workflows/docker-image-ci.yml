@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [amd64, aarch64, armhf]
+        architecture: [x86_64, aarch64, armhf]
     steps:
       - name: Checkout
         uses: actions/checkout@v2

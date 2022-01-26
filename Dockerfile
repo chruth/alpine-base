@@ -24,7 +24,7 @@ RUN apk add --update --no-cache \
     mkdir "${APP_DIR}" && \
     # s6 overlay download
     curl -o /tmp/s6overlay.tar.xz -sL \
-    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-${ARCH}.tar.xz" && \
+    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-${ARCH}-${S6_VERSION}.tar.xz" && \
     tar -xJf /tmp/s6overlay.tar.xz -C / && \
     # cleanup
     apk del curl && \
