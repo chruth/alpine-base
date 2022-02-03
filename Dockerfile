@@ -9,7 +9,7 @@ ENV \
   PGID="1000" \
   TZ="Europe/Berlin"
 
-ARG S6_VERSION="3.0.0.2"
+ARG S6_VERSION="2.2.0.3"
 ARG ARCH
 
 # install packages
@@ -23,9 +23,9 @@ RUN apk add --update --no-cache \
     # create app directory
     mkdir "${APP_DIR}" && \
     # s6 overlay download
-    curl -o /tmp/s6overlay.tar.xz -sL \
-    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-${ARCH}-${S6_VERSION}.tar.xz" && \
-    tar -xJf /tmp/s6overlay.tar.xz -C / && \
+    curl -o /tmp/s6overlay.tar.gz -sL \
+    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-${ARCH}.tar.gz" && \
+    tar xzf /tmp/s6overlay.tar.gz -C / && \
     # cleanup
     apk del curl && \
     rm -rf /tmp/*

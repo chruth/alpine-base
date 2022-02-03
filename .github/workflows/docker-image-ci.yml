@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [x86_64, aarch64, armhf]
+        architecture: [amd64, aarch64, armhf]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -71,7 +71,7 @@ jobs:
         run: |
           IMAGE=${GITHUB_REPOSITORY}
           TAG=${GITHUB_SHA:0:7}
-          docker manifest create ${IMAGE}:${TAG} ${IMAGE}:x86_64-${TAG} ${IMAGE}:armhf-${TAG} ${IMAGE}:aarch64-${TAG}
+          docker manifest create ${IMAGE}:${TAG} ${IMAGE}:amd64-${TAG} ${IMAGE}:armhf-${TAG} ${IMAGE}:aarch64-${TAG}
           docker manifest push   ${IMAGE}:${GITHUB_SHA:0:7}
-          docker manifest create ${IMAGE}:latest ${IMAGE}:x86_64-${TAG} ${IMAGE}:armhf-${TAG} ${IMAGE}:aarch64-${TAG}
+          docker manifest create ${IMAGE}:latest ${IMAGE}:amd64-${TAG} ${IMAGE}:armhf-${TAG} ${IMAGE}:aarch64-${TAG}
           docker manifest push   ${IMAGE}:latest
