@@ -1,31 +1,34 @@
-FROM alpine:3.14
-LABEL maintainer="chruth"
+FROM alpine:3.16
+
+ARG S6_VERSION="3.1.2.1"
+ARG ARCH
 
 ENV \
-  S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
-  CONFIG_DIR="/config" \
   APP_DIR="/app" \
-  PUID="1000" \
+  CONFIG_DIR="/config" \
   PGID="1000" \
+  PUID="1000" \
+  S6_BEHAVIOUR_IF_STAGE2_FAILS="2" \
+  S6_CMD_WAIT_FOR_SERVICES_MAXTIME="0" \
   TZ="Europe/Berlin"
-
-ARG S6_VERSION="2.2.0.3"
-ARG ARCH
 
 # install packages
 RUN apk add --update --no-cache \
     bash \
-    coreutils \
-    shadow \
-    tzdata \
     ca-certificates \
-    curl && \
+    coreutils \
+    curl \
+    shadow \
+    tzdata && \
     # create app directory
     mkdir "${APP_DIR}" && \
     # s6 overlay download
-    curl -o /tmp/s6overlay.tar.gz -sL \
-    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-${ARCH}.tar.gz" && \
-    tar xzf /tmp/s6overlay.tar.gz -C / && \
+    curl -o /tmp/s6overlay-noarch.tar.xz -sL \
+    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-noarch.tar.xz" && \
+    tar -xJf /tmp/s6overlay-noarch.tar.xz -C / && \
+    curl -o /tmp/s6overlay-${ARCH}.tar.xz -sL \
+    "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-${ARCH}.tar.xz" && \
+    tar -xJf /tmp/s6overlay-${ARCH}.tar.xz -C / && \
     # cleanup
     apk del curl && \
     rm -rf /tmp/*
@@ -37,4 +40,4 @@ RUN \
 
 VOLUME ["${CONFIG_DIR}"]
 
-ENTRYPOINT [ "/init" ]
+ENTRYPOINT ["/init"]
