@@ -1,0 +1,14 @@
+#!/command/with-contenv bash
+
+groupmod -o -g "${PGID}" yaapc
+usermod -o -u "${PUID}" yaapc
+
+echo "
+-------------------------------------
+-------------------------------------'
+User uid:    $(id -u yaapc)
+User gid:    $(id -g yaapc)
+Timezone:    "${TZ}"
+-------------------------------------
+-------------------------------------'
+"

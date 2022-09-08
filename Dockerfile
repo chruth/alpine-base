@@ -12,6 +12,8 @@ ENV \
   S6_CMD_WAIT_FOR_SERVICES_MAXTIME="0" \
   TZ="Europe/Berlin"
 
+COPY rootfs /
+
 # install packages
 RUN apk add --update --no-cache \
     bash \
@@ -29,6 +31,8 @@ RUN apk add --update --no-cache \
     curl -o /tmp/s6overlay-${ARCH}.tar.xz -sL \
     "https://github.com/just-containers/s6-overlay/releases/download/v${S6_VERSION}/s6-overlay-${ARCH}.tar.xz" && \
     tar -xJf /tmp/s6overlay-${ARCH}.tar.xz -C / && \
+    # make scripts executable
+    chmod +x /etc/s6-overlay/scripts/* && \
     # cleanup
     apk del curl && \
     rm -rf /tmp/*
