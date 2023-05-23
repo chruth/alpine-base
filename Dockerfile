@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.18
 
 ARG S6_VERSION="3.1.2.1"
 ARG ARCH
