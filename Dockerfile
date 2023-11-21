@@ -1,6 +1,6 @@
 FROM alpine:3.18
 
-ARG S6_VERSION="3.1.6.0"
+ARG S6_VERSION="3.1.6.2"
 ARG ARCH
 
 ENV \
